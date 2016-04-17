@@ -16,7 +16,7 @@ import java.util.Map;
 public class PlayerSetDataWorldExecutor extends CommandExecutor {
 
     public PlayerSetDataWorldExecutor() {
-        setPermission(Permissions.SUBJECT_SET_DATA);
+        setPermission(Permissions.PLAYER_SET_DATA);
     }
 
     @Override
