@@ -19,10 +19,10 @@ public class Permissions {
     public static final String SUBJECT_SET_PERMISSION =         "permissionmanager.commands.admin.subject.set.permission";
     public static final String SUBJECT_SET_PREFIX =             "permissionmanager.commands.admin.subject.set.prefix";
     public static final String SUBJECT_REMOVE_PREFIX =          "permissionmanager.commands.admin.subject.remove.prefix";
-    public static final String SUBJECT_SET_DATA =               "permissionmanager.commands.admin.subject.set.data";
     public static final String SUBJECT_ADD_GROUP =              "permissionmanager.commands.admin.subject.add.group";
     public static final String PLAYER_SET_SUFFIX =              "permissionmanager.commands.admin.player.set.suffix";
     public static final String PLAYER_REMOVE_SUFFIX =           "permissionmanager.commands.admin.player.remove.suffix";
+    public static final String PLAYER_SET_DATA =                "permissionmanager.commands.admin.player.set.data";
     public static final String GROUP_SET_NAME =                 "permissionmanager.commands.admin.group.set.name";
     public static final String GROUP_SET_RANK =                 "permissionmanager.commands.admin.group.set.rank";
     public static final String PROMOTION_ADD_GROUP =            "permissionmanager.commands.admin.promotion.add.group";
