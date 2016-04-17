@@ -14,6 +14,10 @@ import java.util.Map;
  */
 public class SubjectSetPermissionWorldRuleExecutor extends CommandExecutor {
 
+    public SubjectSetPermissionWorldRuleExecutor() {
+        setPermission("7213862394562397852059845");
+    }
+
     @Override
     public void execute(CommandSource source, Map<String, Object> values) {
         Subject subject = (Subject) values.get("subject");
