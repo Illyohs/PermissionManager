@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PermissionManager">
+    <output-path>$PROJECT_DIR$/../spongeServer/mods</output-path>
+    <root id="archive" name="PermissionManager.jar">
+      <element id="module-output" name="PermissionManager" />
+    </root>
+  </artifact>
+</component>
