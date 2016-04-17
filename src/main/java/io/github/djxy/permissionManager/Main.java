@@ -98,7 +98,7 @@ public class Main {
             PermissionManager.getInstance().setDefaultGroup(PermissionManager.getInstance().getOrCreateGroup("default"));
 
         PermissionManager.getInstance().getOrCreateCustomSubject("DedicatedServer");
-        Sponge.getCommandManager().register(this, createCommand(), "pm", "permission", "permnissionmanager");
+        Sponge.getCommandManager().register(this, createCommand(), config.getCommandAlias());
         Sponge.getServiceManager().setProvider(this, PermissionService.class, PMService.getInstance());
     }
 

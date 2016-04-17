@@ -16,12 +16,17 @@ public class ConfigFile extends FileManager {
     private final Object plugin;
     private final FileManager[] fileManagers;
     private int timeIntervalForSaving = 10;
+    private String commandAlias = "pm";
     private Task task;
 
     public ConfigFile(Path folder, Object plugin, FileManager... fileManagers) {
         super(folder, "config");
         this.plugin = plugin;
         this.fileManagers = fileManagers;
+    }
+
+    public String getCommandAlias() {
+        return commandAlias;
     }
 
     public void setTimeIntervalForSaving(int timeIntervalForSaving) {
@@ -45,12 +50,16 @@ public class ConfigFile extends FileManager {
     protected void save(ConfigurationNode root) {
         root.getNode("timeIntervalForSaving").setValue(timeIntervalForSaving);
         root.getNode("suffix").setValue(Player.SUFFIX);
+        root.getNode("commandAlias").setValue(commandAlias);
     }
 
     @Override
     protected void load(ConfigurationNode root) {
         if(!root.getNode("suffix").isVirtual())
             Player.SUFFIX = root.getNode("suffix").getString();
+
+        if(!root.getNode("commandAlias").isVirtual())
+            commandAlias = root.getNode("commandAlias").getString();
 
         if(!root.getNode("timeIntervalForSaving").isVirtual())
             setTimeIntervalForSaving(root.getNode("timeIntervalForSaving").getInt(10));
