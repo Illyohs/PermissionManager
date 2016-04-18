@@ -27,6 +27,7 @@ public abstract class Subject implements ObjectSerializer {
     private final CopyOnWriteArrayList<Group> globalGroups;
     private final Map<String, CopyOnWriteArrayList<Group>> groupsPerWorld;
     private final Map<Group, String> groupsLocation;
+    private final Map<String, Map<String, String>> datas;//Key/Location/Value
     private String prefix = "";
 
     public Subject(String identifier) {
@@ -38,6 +39,7 @@ public abstract class Subject implements ObjectSerializer {
         this.permissionsPerWorld = new ConcurrentHashMap<>();
         this.groupsLocation = new ConcurrentHashMap<>();
         this.listener = new Listener();
+        this.datas = new ConcurrentHashMap<>();
     }
 
     public String getPrefix() {
@@ -133,20 +135,20 @@ public abstract class Subject implements ObjectSerializer {
         if(worldGroups != null) {
             for (int i = 0; i < worldGroups.size() && perm == null; i++) {
                 Group group = worldGroups.get(i);
-                perm = group.getPermission(permission);
+                perm = group.getPermission(world, permission);
 
                 if (perm == null)
-                    perm = group.getPermission(world, permission);
+                    perm = group.getPermission(permission);
             }
 
         }
 
         for(int i = 0; i < globalGroups.size() && perm == null; i++){
             Group group = globalGroups.get(i);
-            perm = group.getPermission(permission);
+            perm = group.getPermission(world, permission);
 
             if(perm == null)
-                perm = group.getPermission(world, permission);
+                perm = group.getPermission(permission);
         }
 
         if(perm != null)
@@ -173,6 +175,71 @@ public abstract class Subject implements ObjectSerializer {
         }
 
         return perm;
+    }
+
+    protected String getDataValue(String world, String key, boolean firstCheck, Map<Group, Object> groupChecked){
+        String value = null;
+
+        if(firstCheck) {
+            value = getData(world, key);
+
+            if (value == null) {
+                value = getData(key);
+
+                if(value != null)
+                    return value;
+            } else {
+                return value;
+            }
+        }
+
+        List<Group> worldGroups = groupsPerWorld.get(world);
+
+        if(worldGroups != null) {
+            for (int i = 0; i < worldGroups.size() && value == null; i++) {
+                Group group = worldGroups.get(i);
+                value = group.getData(world, key);
+
+                if (value == null)
+                    value = group.getData(key);
+            }
+
+            if(value != null)
+                return value;
+        }
+
+        for(int i = 0; i < globalGroups.size() && value == null; i++){
+            Group group = globalGroups.get(i);
+            value = group.getData(world, key);
+
+            if(value == null)
+                value = group.getData(key);
+        }
+
+        if(value != null)
+            return value;
+
+        if(worldGroups != null) {
+            for (int i = 0; i < worldGroups.size() && value == null; i++) {
+                Group group = worldGroups.get(i);
+
+                if(!groupChecked.containsKey(group)) {
+                    groupChecked.put(group, null);
+                    value = group.getDataValue(world, key, false, groupChecked);
+                }
+            }
+        }
+
+        for(int i = 0; i < globalGroups.size() && value == null; i++){
+            Group group = globalGroups.get(i);
+
+            if(!groupChecked.containsKey(group)) {
+                groupChecked.put(group, null);
+                value = group.getDataValue(world, key, false, groupChecked);
+            }
+        }
+
+        return value;
     }
 
     public boolean hasGroup(Group group){
@@ -300,6 +367,67 @@ public abstract class Subject implements ObjectSerializer {
             groupsPerWorld.get(world).clear();
     }
 
+    public String getDataValue(String world, String key){
+        return getDataValue(world, key, true, new HashMap<>());
+    }
+
+    public Map<String, String> getGlobalData() {
+        return getWorldData(Subject.GLOBAL_LOCATION);
+    }
+
+    public Map<String, String> getWorldData(String world) {
+        if(datas.containsKey(world))
+            return new HashMap<>(datas.get(world));
+        else
+            return new HashMap<>();
+    }
+
+    public Map<String, Map<String, String>> getWorldsData() {
+        Map<String, Map<String, String>> map = new HashMap<>();
+
+        for(String key : datas.keySet())
+            if(!Subject.GLOBAL_LOCATION.equals(key))
+                map.put(key, new HashMap<>(datas.get(key)));
+
+        return map;
+    }
+
+    public void setData(String key, String value){
+        setData(GLOBAL_LOCATION, key, value);
+    }
+
+    public void setData(String world, String key, String value){
+        if(!datas.containsKey(key))
+            datas.put(key, new ConcurrentHashMap<>());
+
+        datas.get(key).put(world, value);
+    }
+
+    public String getData(String key){
+        return getData(GLOBAL_LOCATION, key);
+    }
+
+    public String getData(String world, String key){
+        if(datas.containsKey(key))
+            return datas.get(key).get(world);
+
+        return null;
+    }
+
+    public void clearGlobalData(){
+        datas.remove(Subject.GLOBAL_LOCATION);
+    }
+
+    public void clearWorldsData(){
+        for(String location : datas.keySet())
+            if(!Subject.GLOBAL_LOCATION.equals(location))
+                datas.remove(location);
+    }
+
+    public void clearWorldData(String world){
+        datas.remove(world);
+    }
+
     @Override
     public void initFromNode(ConfigurationNode node){
         prefix = node.getNode("prefix").getString("");
@@ -383,6 +511,28 @@ public abstract class Subject implements ObjectSerializer {
                 }
             }
         }
+
+        if(!node.getNode("data").isVirtual()){
+            Map<Object, ConfigurationNode> datas = (Map<Object, ConfigurationNode>) node.getNode("data").getChildrenMap();
+
+            for(Object data : datas.keySet())
+                setData((String) data, datas.get(data).getString(""));
+        }
+
+        if(!node.getNode("worlds").isVirtual()) {
+            Map<Object, ConfigurationNode> worlds = (Map<Object, ConfigurationNode>) node.getNode("worlds").getChildrenMap();
+
+            for (Object w : worlds.keySet()) {
+                ConfigurationNode world = worlds.get(w);
+
+                if(!world.getNode("data").isVirtual()){
+                    Map<Object, ConfigurationNode> datas = (Map<Object, ConfigurationNode>) world.getNode("data").getChildrenMap();
+
+                    for(Object data : datas.keySet())
+                        setData((String) w, (String) data, datas.get(data).getString(""));
+                }
+            }
+        }
     }
 
     @Override
@@ -434,6 +584,19 @@ public abstract class Subject implements ObjectSerializer {
                     groups.add(group.getIdentifier());
 
                 node.getNode("worlds", pairs.getKey(), "groups").setValue(groups);
+            }
+        }
+
+        for(String key : datas.keySet()){
+            if(!datas.get(key).isEmpty()){
+                Map<String, String> data = datas.get(key);
+
+                for(String location : data.keySet()) {
+                    if(location.equals(Subject.GLOBAL_LOCATION))
+                        node.getNode("data", key).setValue(data.get(location));
+                    else
+                        node.getNode("worlds", location, "data", key).setValue(data.get(location));
+                }
             }
         }
     }
