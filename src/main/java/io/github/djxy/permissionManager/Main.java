@@ -10,6 +10,7 @@ import io.github.djxy.permissionManager.commands.nodes.arguments.*;
 import io.github.djxy.permissionManager.files.fileManagers.*;
 import io.github.djxy.permissionManager.home.HomeService;
 import io.github.djxy.permissionManager.home.RedProtectHomeContainer;
+import io.github.djxy.permissionManager.pmSubjects.PMPlayerSubject;
 import io.github.djxy.permissionManager.region.FoxGuardRegionContainer;
 import io.github.djxy.permissionManager.region.RedProtectRegionContainer;
 import io.github.djxy.permissionManager.region.RegionService;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.command.SendCommandEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.event.message.MessageChannelEvent;
@@ -30,6 +32,7 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Optional;
 
 /**
  * Created by Samuel on 2016-03-20.
@@ -128,6 +131,16 @@ public class Main {
             config.save();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Listener
+    public void onCommand(SendCommandEvent event){
+        if(event.getCommand().startsWith("help")){
+            Optional<org.spongepowered.api.entity.living.player.Player> player = event.getCause().first(org.spongepowered.api.entity.living.player.Player.class);
+
+            if(player.isPresent())
+                ((PMPlayerSubject)PMService.getInstance().getUserSubjects().get(player.get().getUniqueId().toString())).updateTickHelpCommand();
         }
     }
 

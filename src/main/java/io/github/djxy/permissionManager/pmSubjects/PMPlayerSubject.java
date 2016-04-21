@@ -20,8 +20,14 @@ import java.util.Set;
  */
 public class PMPlayerSubject extends PMSubject implements OptionSubject, OptionSubjectData {
 
+    private int tickHelpCommand = -1;
+
     public PMPlayerSubject(Player subject, SubjectCollection collection) {
         super(subject, collection);
+    }
+
+    public void updateTickHelpCommand() {
+        this.tickHelpCommand = Sponge.getServer().getRunningTimeTicks();
     }
 
     public Player getPlayer(){
@@ -124,8 +130,12 @@ public class PMPlayerSubject extends PMSubject implements OptionSubject, OptionS
     private boolean getPermissionValue(String world, String permission){
         Permission perm = getPlayer().getPermissionValue(world, permission);
 
-        if(perm != null)
-            return perm.getValue(Sponge.getServer().getPlayer(getPlayer().getUUID()).get());
+        if(perm != null) {
+            if(Sponge.getServer().getRunningTimeTicks() == tickHelpCommand)
+                return perm.getValue();
+            else
+                return perm.getValue(Sponge.getServer().getPlayer(getPlayer().getUUID()).get());
+        }
         else
             return false;
     }
