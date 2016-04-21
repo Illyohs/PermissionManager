@@ -236,11 +236,9 @@ public class Main {
                                 .addNode(new PermissionNode("permission")
                                         .addNode(new WorldNode("world")
                                                 .addNode(new BooleanNode("value")
-                                                        .setExecutor(new SubjectSetPermissionWorldExecutor()))
-                                                .addNode(new RuleNode("rule")))
+                                                        .setExecutor(new SubjectSetPermissionWorldExecutor())))
                                         .addNode(new BooleanNode("value")
-                                                .setExecutor(new SubjectSetPermissionExecutor()))
-                                        .addNode(new RuleNode("rule")))))
+                                                .setExecutor(new SubjectSetPermissionExecutor())))))
                 .addNode(new GroupSubjectNode("group", "subject")
                         .addNode(new ChoiceNode("add")
                                 .addNode(new GroupSubjectNode("group")
@@ -266,11 +264,9 @@ public class Main {
                                 .addNode(new PermissionNode("permission")
                                         .addNode(new WorldNode("world")
                                                 .addNode(new BooleanNode("value")
-                                                        .setExecutor(new SubjectSetPermissionWorldExecutor()))
-                                                .addNode(new RuleNode("rule")))
+                                                        .setExecutor(new SubjectSetPermissionWorldExecutor())))
                                         .addNode(new BooleanNode("value")
-                                                .setExecutor(new SubjectSetPermissionExecutor()))
-                                        .addNode(new RuleNode("rule")))));
+                                                .setExecutor(new SubjectSetPermissionExecutor())))));
 
         return new Command(root);
     }
