@@ -9,7 +9,7 @@ import java.util.UUID;
  */
 public abstract class Player extends Subject {
 
-    public static String SUFFIX = " <%player%>: ";
+    public static String SUFFIX = "<%player%>: ";
 
     private final UUID uuid;
     private String suffix;
