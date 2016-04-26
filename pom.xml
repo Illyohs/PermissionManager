@@ -53,6 +53,11 @@
             <version>v0.17.0</version>
         </dependency>
         <dependency>
+            <groupId>com.github.djxy</groupId>
+            <artifactId>DjxyCore</artifactId>
+            <version>-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>com.github.FabioZumbi12</groupId>
             <artifactId>Sponge-RedProtect</artifactId>
             <version>-SNAPSHOT</version>
