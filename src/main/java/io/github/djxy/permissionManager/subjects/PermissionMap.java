@@ -40,13 +40,14 @@ public class PermissionMap implements Map<String, Permission> {
         return permissions.containsValue(value);
     }
 
-    //Only good way to check the permissions
-    @Override
-    public Permission get(Object key) {
-        String permission = (String) key;
-
-        if(permissions.containsKey(key))
-            return permissions.get(key);
+    /**
+     * Check to get the controller of a permission. permissionmanager.* is the controller of all the permissions of permissionmanager.
+     * @param permission
+     * @return
+     */
+    public Permission getPermissionControllerOf(String permission) {
+        if(permissions.containsKey(permission))
+            return permissions.get(permission);
         else if(permission.contains(".")){
             String permissions[] = new String[permission.length() - permission.replace(".", "").length() + 1];
             int lastIndex = 1;
@@ -65,6 +66,15 @@ public class PermissionMap implements Map<String, Permission> {
                     return perm;
             }
         }
+
+        return null;
+    }
+
+    //Only good way to check the permissions
+    @Override
+    public Permission get(Object key) {
+        if(permissions.containsKey(key))
+            return permissions.get(key);
 
         return null;
     }
