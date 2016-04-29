@@ -25,27 +25,27 @@ public class PermissionManager {
     private final ConcurrentHashMap<String,Group> groups = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID,Player> players = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String,CustomSubject> customSubjects = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, ConcurrentHashMap<String, CopyOnWriteArrayList<Subject>>> subjectsPerPermission = new ConcurrentHashMap<>();//Context/Permission/Subject
+    private final ConcurrentHashMap<String, ConcurrentHashMap<String, CopyOnWriteArrayList<Subject>>> subjectsPerPermission = new ConcurrentHashMap<>();//Permission/Location/Subject
 
     private PermissionManager() {
     }
 
-    public Set<Subject> getSubjectWithPermission(String permission){
+    public Set<Subject> getSubjectsWithPermission(String permission){
         Set<Subject> subjects = new HashSet<>();
 
-        for(String location : subjectsPerPermission.keySet())
-            if(subjectsPerPermission.get(location).containsKey(permission))
-                subjects.addAll(subjectsPerPermission.get(location).get(permission));
+        if(subjectsPerPermission.containsKey(permission))
+            for(List<Subject> list : subjectsPerPermission.get(permission).values())
+                subjects.addAll(list);
 
         return subjects;
     }
 
-    public Set<Subject> getSubjectWithPermission(String world, String permission){
+    public Set<Subject> getSubjectsWithPermission(String world, String permission){
         Set<Subject> subjects = new HashSet<>();
 
-        if(subjectsPerPermission.containsKey(world))
-            if(subjectsPerPermission.get(world).containsKey(permission))
-                subjects.addAll(subjectsPerPermission.get(world).get(permission));
+        if(subjectsPerPermission.containsKey(permission))
+            if(subjectsPerPermission.get(permission).containsKey(world))
+                subjects.addAll(subjectsPerPermission.get(permission).get(world));
 
         return subjects;
     }
