@@ -54,10 +54,10 @@ public abstract class PMSubject implements Subject, SubjectData {
     @Override
     public boolean isChildOf(Set<Context> set, Subject subject) {
         if(subject instanceof PMGroupSubject){
-            if (Util.isGlobalContext(set))
+            if (SubjectUtil.isGlobalContext(set))
                 return this.subject.getGlobalGroups().contains(((PMGroupSubject) subject).getGroup());
-            else if (Util.isWorldContext(set))
-                return this.subject.getWorldGroups(Util.getWorldFromContext(set)).contains(((PMGroupSubject) subject).getGroup());
+            else if (SubjectUtil.isWorldContext(set))
+                return this.subject.getWorldGroups(SubjectUtil.getWorldFromContext(set)).contains(((PMGroupSubject) subject).getGroup());
         }
 
         return false;
@@ -97,14 +97,14 @@ public abstract class PMSubject implements Subject, SubjectData {
     public Map<String, Boolean> getPermissions(Set<Context> set) {
         Map<String, Boolean> permissions = new HashMap<>();
 
-        if (Util.isGlobalContext(set)){
+        if (SubjectUtil.isGlobalContext(set)){
             PermissionMap map = subject.getGlobalPermissions();
 
             for(String permission : map.keySet())
                 permissions.put(permission, map.get(permission).getValue());
         }
-        else if (Util.isWorldContext(set)){
-            PermissionMap map = subject.getWorldPermissions(Util.getWorldFromContext(set));
+        else if (SubjectUtil.isWorldContext(set)){
+            PermissionMap map = subject.getWorldPermissions(SubjectUtil.getWorldFromContext(set));
 
             for(String permission : map.keySet())
                 permissions.put(permission, map.get(permission).getValue());
@@ -116,16 +116,16 @@ public abstract class PMSubject implements Subject, SubjectData {
     @Override
     public boolean setPermission(Set<Context> set, String s, Tristate tristate) {
         if(tristate != Tristate.UNDEFINED) {
-            if (Util.isGlobalContext(set))
+            if (SubjectUtil.isGlobalContext(set))
                 subject.setPermission(new Permission(s, tristate.asBoolean()));
-            else if (Util.isWorldContext(set))
-                subject.setPermission(Util.getWorldFromContext(set), new Permission(s, tristate.asBoolean()));
+            else if (SubjectUtil.isWorldContext(set))
+                subject.setPermission(SubjectUtil.getWorldFromContext(set), new Permission(s, tristate.asBoolean()));
         }
         else {
-            if (Util.isGlobalContext(set))
+            if (SubjectUtil.isGlobalContext(set))
                 subject.removePermission(s);
-            else if (Util.isWorldContext(set))
-                subject.removePermission(Util.getWorldFromContext(set), s);
+            else if (SubjectUtil.isWorldContext(set))
+                subject.removePermission(SubjectUtil.getWorldFromContext(set), s);
         }
 
         return true;
@@ -140,10 +140,10 @@ public abstract class PMSubject implements Subject, SubjectData {
 
     @Override
     public boolean clearPermissions(Set<Context> set) {
-        if (Util.isGlobalContext(set))
+        if (SubjectUtil.isGlobalContext(set))
             subject.clearGlobalPermissions();
-        else if (Util.isWorldContext(set))
-            subject.clearWorldPermissions(Util.getWorldFromContext(set));
+        else if (SubjectUtil.isWorldContext(set))
+            subject.clearWorldPermissions(SubjectUtil.getWorldFromContext(set));
 
         return true;
     }
@@ -168,12 +168,12 @@ public abstract class PMSubject implements Subject, SubjectData {
         PMService service = PMService.getInstance();
         List<Subject> parents = new ArrayList<>();
 
-        if (Util.isGlobalContext(set)){
+        if (SubjectUtil.isGlobalContext(set)){
             for(Group group : this.subject.getGlobalGroups())
                 parents.add(service.getGroupSubjects().get(group.getIdentifier()));
         }
-        else if (Util.isWorldContext(set)){
-            for(Group group : this.subject.getWorldGroups(Util.getWorldFromContext(set)))
+        else if (SubjectUtil.isWorldContext(set)){
+            for(Group group : this.subject.getWorldGroups(SubjectUtil.getWorldFromContext(set)))
                 parents.add(service.getGroupSubjects().get(group.getIdentifier()));
         }
 
@@ -183,10 +183,10 @@ public abstract class PMSubject implements Subject, SubjectData {
     @Override
     public boolean addParent(Set<Context> set, Subject subject) {
         if(subject instanceof PMGroupSubject) {
-            if (Util.isGlobalContext(set))
+            if (SubjectUtil.isGlobalContext(set))
                 this.subject.addGroup(((PMGroupSubject) subject).getGroup());
-            else if (Util.isWorldContext(set))
-                this.subject.addGroup(Util.getWorldFromContext(set), ((PMGroupSubject) subject).getGroup());
+            else if (SubjectUtil.isWorldContext(set))
+                this.subject.addGroup(SubjectUtil.getWorldFromContext(set), ((PMGroupSubject) subject).getGroup());
 
                 return true;
         }
@@ -213,10 +213,10 @@ public abstract class PMSubject implements Subject, SubjectData {
 
     @Override
     public boolean clearParents(Set<Context> set) {
-        if (Util.isGlobalContext(set))
+        if (SubjectUtil.isGlobalContext(set))
             subject.clearGlobalGroups();
-        else if (Util.isWorldContext(set))
-            subject.clearWorldGroups(Util.getWorldFromContext(set));
+        else if (SubjectUtil.isWorldContext(set))
+            subject.clearWorldGroups(SubjectUtil.getWorldFromContext(set));
 
         return true;
     }

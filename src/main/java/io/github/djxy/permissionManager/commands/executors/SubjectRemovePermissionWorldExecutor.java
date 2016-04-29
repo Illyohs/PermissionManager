@@ -1,8 +1,8 @@
 package io.github.djxy.permissionManager.commands.executors;
 
+import io.github.djxy.core.repositories.PlayerRepository;
 import io.github.djxy.permissionManager.Permissions;
 import io.github.djxy.permissionManager.commands.CommandExecutor;
-import io.github.djxy.permissionManager.repositories.PlayerRepository;
 import io.github.djxy.permissionManager.subjects.Permission;
 import io.github.djxy.permissionManager.subjects.Player;
 import io.github.djxy.permissionManager.subjects.Subject;
@@ -29,7 +29,7 @@ public class SubjectRemovePermissionWorldExecutor extends CommandExecutor {
         Permission perm = subject.getPermission(worldName, permission);
 
         if(perm != null) {
-            String name = subject instanceof Player ?PlayerRepository.getInstance().getPlayerName(((Player) subject).getUUID()):subject.getIdentifier();
+            String name = subject instanceof Player ? PlayerRepository.getInstance().getPlayerName(((Player) subject).getUUID()):subject.getIdentifier();
 
             source.sendMessage(PREFIX.concat(Text.of(INFO_COLOR, name, RESET_COLOR, " no longer has the permission ", INFO_COLOR, permission, RESET_COLOR, " in the world ", INFO_COLOR, worldName, RESET_COLOR,".")));
 

@@ -1,20 +1,25 @@
 package io.github.djxy.permissionManager;
 
 import com.google.inject.Inject;
-import io.github.djxy.permissionManager.commands.Command;
+import io.github.djxy.core.commands.Command;
+import io.github.djxy.core.commands.nodes.ChoiceNode;
+import io.github.djxy.core.commands.nodes.MultipleNode;
+import io.github.djxy.core.commands.nodes.Node;
+import io.github.djxy.core.commands.nodes.arguments.*;
+import io.github.djxy.core.files.fileManagers.TranslationsFile;
+import io.github.djxy.core.translation.Translator;
+import io.github.djxy.permissionManager.commands.arguments.GroupSubjectNode;
+import io.github.djxy.permissionManager.commands.arguments.PermissionNode;
+import io.github.djxy.permissionManager.commands.arguments.PlayerSubjectNode;
+import io.github.djxy.permissionManager.commands.arguments.PromotionNode;
 import io.github.djxy.permissionManager.commands.executors.*;
-import io.github.djxy.permissionManager.commands.nodes.ChoiceNode;
-import io.github.djxy.permissionManager.commands.nodes.MultipleNode;
-import io.github.djxy.permissionManager.commands.nodes.Node;
-import io.github.djxy.permissionManager.commands.nodes.arguments.*;
-import io.github.djxy.permissionManager.files.fileManagers.*;
+import io.github.djxy.permissionManager.fileManagers.*;
 import io.github.djxy.permissionManager.home.HomeService;
 import io.github.djxy.permissionManager.home.RedProtectHomeContainer;
 import io.github.djxy.permissionManager.pmSubjects.PMPlayerSubject;
 import io.github.djxy.permissionManager.region.FoxGuardRegionContainer;
 import io.github.djxy.permissionManager.region.RedProtectRegionContainer;
 import io.github.djxy.permissionManager.region.RegionService;
-import io.github.djxy.permissionManager.repositories.PlayerRepository;
 import io.github.djxy.permissionManager.subjects.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,19 +31,28 @@ import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
  * Created by Samuel on 2016-03-20.
  */
-@Plugin(id = "permissionmanager", name = "Permission Manager", version = "1.0")
+@Plugin(id = "permissionmanager", name = "Permission Manager", version = "1.0", dependencies = @Dependency(id = "djxycore"))
 public class Main {
+
+    private static Translator translatorInstance;
+
+    public static Translator getTranslatorInstance(){
+        return translatorInstance;
+    }
 
     @Inject
     @DefaultConfig(sharedRoot = false)
@@ -50,7 +64,8 @@ public class Main {
     private GroupFile groups;
     private ConfigFile config;
     private PromotionFile promotions;
-    private PlayerRepositoryFile playerRepositoryFile;
+    private Translator translator;
+    private ArrayList<TranslationsFile> translationsFiles;
 
     @Listener
     public void onGamePreInitializationEvent(GamePreInitializationEvent event) throws IOException {
@@ -61,13 +76,23 @@ public class Main {
             HomeService.getInstance().addHomeContainer(new RedProtectHomeContainer());
         }
 
-        try {
-            playerRepositoryFile = new PlayerRepositoryFile(path.getParent());
+        Path languagesPath = path.getParent().resolve("languages");
+        File languagesFolder = languagesPath.toFile();
+        translator = new Translator();
+        translatorInstance = translator;
+        translationsFiles = new ArrayList<>();
 
-            playerRepositoryFile.load();
-        } catch (Exception e) {
-            e.printStackTrace();
+        for(File language : languagesFolder.listFiles()) {
+            try {
+                TranslationsFile translationsFile = new TranslationsFile(languagesPath, language.getName().substring(0, language.getName().indexOf('.')), translator);
+
+                translationsFile.load();
+                translationsFiles.add(translationsFile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+
         try {
             players = new PlayerFile(path.getParent());
 
@@ -90,7 +115,7 @@ public class Main {
             e.printStackTrace();
         }
         try {
-            config = new ConfigFile(path.getParent(), this, players, groups, playerRepositoryFile, promotions);
+            config = new ConfigFile(path.getParent(), this, players, groups, promotions);
 
             config.load();
         } catch (Exception e) {
@@ -107,11 +132,6 @@ public class Main {
 
     @Listener
     public void onGameStoppingServerEvent(GameStoppingServerEvent event){
-        try {
-            playerRepositoryFile.save();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         try {
             players.save();
         } catch (Exception e) {
@@ -154,8 +174,11 @@ public class Main {
 
     @Listener
     public void onJoin(ClientConnectionEvent.Login event){
-        Player player = PermissionManager.getInstance().getOrCreatePlayer(event.getProfile().getUniqueId(), true);
-        PlayerRepository.getInstance().setPlayer(event.getProfile().getUniqueId(), event.getProfile().getName().get());
+        PermissionManager.getInstance().getOrCreatePlayer(event.getProfile().getUniqueId(), true);
+    }
+
+    @Listener
+    public void onJoin(ClientConnectionEvent.Join event){
     }
 
     private Command createCommand(){
@@ -197,7 +220,7 @@ public class Main {
                                 .setExecutor(new CreatePromotionExecutor()))
                         .addNode(new StringNode("group")
                                 .setExecutor(new CreateGroupExecutor())))
-                .addNode(new FileManagerNode("file", playerRepositoryFile, config, groups, players, promotions)
+                .addNode(new FileManagerNode("file", config, groups, players, promotions)
                         .addNode(new ChoiceNode("save")
                                 .setExecutor(new FileSaveExecutor()))
                         .addNode(new ChoiceNode("set")

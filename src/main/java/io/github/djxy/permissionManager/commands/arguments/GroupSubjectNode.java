@@ -1,7 +1,7 @@
-package io.github.djxy.permissionManager.commands.nodes.arguments;
+package io.github.djxy.permissionManager.commands.arguments;
 
+import io.github.djxy.core.commands.nodes.ArgumentNode;
 import io.github.djxy.permissionManager.PermissionManager;
-import io.github.djxy.permissionManager.commands.nodes.ArgumentNode;
 import io.github.djxy.permissionManager.subjects.Group;
 
 import java.util.ArrayList;

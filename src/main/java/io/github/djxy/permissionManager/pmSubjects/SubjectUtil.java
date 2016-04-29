@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * Created by Samuel on 2016-03-28.
  */
-public class Util {
+public class SubjectUtil {
 
     public static boolean isGlobalContext(Set<Context> set){
         return set == null || set.isEmpty();

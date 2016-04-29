@@ -23,16 +23,16 @@ public class PMGroupSubject extends PMSubject {
 
     @Override
     public boolean hasPermission(Set<Context> set, String s) {
-        if(Util.isWorldContext(set))
-            return subject.hasPermission(Util.getWorldFromContext(set), s);
+        if(SubjectUtil.isWorldContext(set))
+            return subject.hasPermission(SubjectUtil.getWorldFromContext(set), s);
         else
             return false;
     }
 
     @Override
     public Tristate getPermissionValue(Set<Context> set, String s) {
-        if(Util.isWorldContext(set))
-            return Tristate.fromBoolean(getPermissionValue(Util.getWorldFromContext(set), s));
+        if(SubjectUtil.isWorldContext(set))
+            return Tristate.fromBoolean(getPermissionValue(SubjectUtil.getWorldFromContext(set), s));
         else
             return Tristate.UNDEFINED;
     }

@@ -1,11 +1,11 @@
 package io.github.djxy.permissionManager.rules;
 
-import io.github.djxy.permissionManager.commands.nodes.ChoiceNode;
-import io.github.djxy.permissionManager.commands.nodes.Node;
-import io.github.djxy.permissionManager.commands.nodes.arguments.DoubleNode;
-import io.github.djxy.permissionManager.commands.nodes.arguments.LongNode;
-import io.github.djxy.permissionManager.commands.nodes.arguments.StringNode;
-import io.github.djxy.permissionManager.commands.nodes.arguments.WorldNode;
+import io.github.djxy.core.commands.nodes.ChoiceNode;
+import io.github.djxy.core.commands.nodes.Node;
+import io.github.djxy.core.commands.nodes.arguments.DoubleNode;
+import io.github.djxy.core.commands.nodes.arguments.LongNode;
+import io.github.djxy.core.commands.nodes.arguments.StringNode;
+import io.github.djxy.core.commands.nodes.arguments.WorldNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,6 +1,6 @@
 package io.github.djxy.permissionManager.rules;
 
-import io.github.djxy.permissionManager.files.ObjectSerializer;
+import io.github.djxy.core.files.ObjectSerializer;
 import org.spongepowered.api.entity.living.player.Player;
 
 /**

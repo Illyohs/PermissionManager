@@ -1,7 +1,7 @@
-package io.github.djxy.permissionManager.files.fileManagers;
+package io.github.djxy.permissionManager.fileManagers;
 
+import io.github.djxy.core.files.FileManager;
 import io.github.djxy.permissionManager.PermissionManager;
-import io.github.djxy.permissionManager.files.FileManager;
 import io.github.djxy.permissionManager.subjects.Group;
 import ninja.leaping.configurate.ConfigurationNode;
 

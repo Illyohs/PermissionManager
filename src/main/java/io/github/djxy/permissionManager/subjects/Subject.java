@@ -1,7 +1,7 @@
 package io.github.djxy.permissionManager.subjects;
 
+import io.github.djxy.core.files.ObjectSerializer;
 import io.github.djxy.permissionManager.PermissionManager;
-import io.github.djxy.permissionManager.files.ObjectSerializer;
 import io.github.djxy.permissionManager.listeners.GroupListener;
 import io.github.djxy.permissionManager.listeners.SubjectListener;
 import io.github.djxy.permissionManager.rules.Rule;
@@ -121,7 +121,7 @@ public abstract class Subject implements ObjectSerializer {
             perm = getPermission(world, permission);
 
             if (perm == null) {
-                perm = getPermission(permission);
+                perm = getPermissionController(permission);
 
                 if(perm != null)
                     return perm;
@@ -138,7 +138,7 @@ public abstract class Subject implements ObjectSerializer {
                 perm = group.getPermission(world, permission);
 
                 if (perm == null)
-                    perm = group.getPermission(permission);
+                    perm = group.getPermissionController(permission);
             }
 
         }
@@ -148,7 +148,7 @@ public abstract class Subject implements ObjectSerializer {
             perm = group.getPermission(world, permission);
 
             if(perm == null)
-                perm = group.getPermission(permission);
+                perm = group.getPermissionController(permission);
         }
 
         if(perm != null)
@@ -279,6 +279,10 @@ public abstract class Subject implements ObjectSerializer {
         return globalPermissions.get(permission);
     }
 
+    protected Permission getPermissionController(String permission){
+        return globalPermissions.getPermissionControllerOf(permission);
+    }
+
     public Permission getPermission(String world, String permission){
         Map<String, Permission> worldPermissions = permissionsPerWorld.get(world);
 
@@ -288,11 +292,13 @@ public abstract class Subject implements ObjectSerializer {
         return null;
     }
 
-    public void setPermission(Permission value){
-        globalPermissions.put(value.getPermission(), value);
+    public void setPermission(Permission permission){
+        System.out.println(globalPermissions.keySet());
+        globalPermissions.put(permission.getPermission(), permission);
+        System.out.println(globalPermissions.keySet());
 
         for (SubjectListener listener : subjectListeners)
-            listener.onPermissionSet(this, value);
+            listener.onPermissionSet(this, permission);
     }
 
     public void setPermission(String world, Permission value){

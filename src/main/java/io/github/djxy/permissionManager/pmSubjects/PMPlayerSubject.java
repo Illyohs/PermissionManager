@@ -48,10 +48,10 @@ public class PMPlayerSubject extends PMSubject implements OptionSubject, OptionS
     public Optional<String> getOption(Set<Context> set, String s) {
         String value;
 
-        if(Util.isGlobalContext(set))
+        if(SubjectUtil.isGlobalContext(set))
             return (value = getPlayer().getDataValue(getPlayer().getCurrentWorld(), s)) != null?Optional.of(value):Optional.empty();
-        else if(Util.isWorldContext(set))
-            return (value = getPlayer().getDataValue(Util.getWorldFromContext(set), s)) != null?Optional.of(value):Optional.empty();
+        else if(SubjectUtil.isWorldContext(set))
+            return (value = getPlayer().getDataValue(SubjectUtil.getWorldFromContext(set), s)) != null?Optional.of(value):Optional.empty();
         else
             return Optional.empty();
     }
@@ -72,30 +72,30 @@ public class PMPlayerSubject extends PMSubject implements OptionSubject, OptionS
 
     @Override
     public Map<String, String> getOptions(Set<Context> set) {
-        if(Util.isGlobalContext(set))
+        if(SubjectUtil.isGlobalContext(set))
             return getPlayer().getGlobalData();
-        else if(Util.isWorldContext(set))
-            return getPlayer().getWorldData(Util.getWorldFromContext(set));
+        else if(SubjectUtil.isWorldContext(set))
+            return getPlayer().getWorldData(SubjectUtil.getWorldFromContext(set));
         else
             return new HashMap<>();
     }
 
     @Override
     public boolean setOption(Set<Context> set, String s, String s1) {
-        if(Util.isGlobalContext(set))
+        if(SubjectUtil.isGlobalContext(set))
             getPlayer().setData(s, s1);
-        else if(Util.isWorldContext(set))
-            getPlayer().setData(Util.getWorldFromContext(set), s, s1);
+        else if(SubjectUtil.isWorldContext(set))
+            getPlayer().setData(SubjectUtil.getWorldFromContext(set), s, s1);
 
         return true;
     }
 
     @Override
     public boolean clearOptions(Set<Context> set) {
-        if(Util.isGlobalContext(set))
+        if(SubjectUtil.isGlobalContext(set))
             getPlayer().clearGlobalData();
-        else if(Util.isWorldContext(set))
-            getPlayer().clearWorldData(Util.getWorldFromContext(set));
+        else if(SubjectUtil.isWorldContext(set))
+            getPlayer().clearWorldData(SubjectUtil.getWorldFromContext(set));
 
         return true;
     }
@@ -109,20 +109,20 @@ public class PMPlayerSubject extends PMSubject implements OptionSubject, OptionS
 
     @Override
     public boolean hasPermission(Set<Context> set, String s) {
-        if(Util.isGlobalContext(set))
+        if(SubjectUtil.isGlobalContext(set))
             return getPlayer().hasPermission(s);
-        else if(Util.isWorldContext(set))
-            return getPlayer().hasPermission(Util.getWorldFromContext(set), s);
+        else if(SubjectUtil.isWorldContext(set))
+            return getPlayer().hasPermission(SubjectUtil.getWorldFromContext(set), s);
         else
             return false;
     }
 
     @Override
     public Tristate getPermissionValue(Set<Context> set, String s) {
-        if(Util.isGlobalContext(set))
+        if(SubjectUtil.isGlobalContext(set))
             return Tristate.fromBoolean(getPermissionValue(getPlayer().getCurrentWorld(), s));
-        else if(Util.isWorldContext(set))
-            return Tristate.fromBoolean(getPermissionValue(Util.getWorldFromContext(set), s));
+        else if(SubjectUtil.isWorldContext(set))
+            return Tristate.fromBoolean(getPermissionValue(SubjectUtil.getWorldFromContext(set), s));
         else
             return Tristate.UNDEFINED;
     }

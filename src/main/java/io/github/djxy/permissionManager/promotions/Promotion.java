@@ -1,7 +1,7 @@
 package io.github.djxy.permissionManager.promotions;
 
+import io.github.djxy.core.files.ObjectSerializer;
 import io.github.djxy.permissionManager.PermissionManager;
-import io.github.djxy.permissionManager.files.ObjectSerializer;
 import io.github.djxy.permissionManager.listeners.GroupListener;
 import io.github.djxy.permissionManager.subjects.Group;
 import io.github.djxy.permissionManager.subjects.Permission;

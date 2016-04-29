@@ -1,6 +1,6 @@
-package io.github.djxy.permissionManager.files.fileManagers;
+package io.github.djxy.permissionManager.fileManagers;
 
-import io.github.djxy.permissionManager.files.FileManager;
+import io.github.djxy.core.files.FileManager;
 import io.github.djxy.permissionManager.subjects.Player;
 import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.scheduler.Task;
