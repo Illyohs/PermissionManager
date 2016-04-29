@@ -293,9 +293,7 @@ public abstract class Subject implements ObjectSerializer {
     }
 
     public void setPermission(Permission permission){
-        System.out.println(globalPermissions.keySet());
         globalPermissions.put(permission.getPermission(), permission);
-        System.out.println(globalPermissions.keySet());
 
         for (SubjectListener listener : subjectListeners)
             listener.onPermissionSet(this, permission);
