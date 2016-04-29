@@ -6,9 +6,7 @@ import io.github.djxy.permissionManager.repositories.PermissionRepository;
 import io.github.djxy.permissionManager.subjects.*;
 import org.spongepowered.api.Sponge;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -27,9 +25,29 @@ public class PermissionManager {
     private final ConcurrentHashMap<String,Group> groups = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID,Player> players = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String,CustomSubject> customSubjects = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, ConcurrentHashMap<String, CopyOnWriteArrayList<Subject>>> subjectsPerPermission = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, ConcurrentHashMap<String, CopyOnWriteArrayList<Subject>>> subjectsPerPermission = new ConcurrentHashMap<>();//Context/Permission/Subject
 
     private PermissionManager() {
+    }
+
+    public Set<Subject> getSubjectWithPermission(String permission){
+        Set<Subject> subjects = new HashSet<>();
+
+        for(String location : subjectsPerPermission.keySet())
+            if(subjectsPerPermission.get(location).containsKey(permission))
+                subjects.addAll(subjectsPerPermission.get(location).get(permission));
+
+        return subjects;
+    }
+
+    public Set<Subject> getSubjectWithPermission(String world, String permission){
+        Set<Subject> subjects = new HashSet<>();
+
+        if(subjectsPerPermission.containsKey(world))
+            if(subjectsPerPermission.get(world).containsKey(permission))
+                subjects.addAll(subjectsPerPermission.get(world).get(permission));
+
+        return subjects;
     }
 
     public List<Player> getPlayers(){

@@ -1,10 +1,12 @@
 package io.github.djxy.permissionManager.pmSubjects;
 
+import io.github.djxy.permissionManager.PermissionManager;
 import org.spongepowered.api.service.context.Context;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.permission.SubjectCollection;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,12 +54,37 @@ public abstract class PMSubjectCollection implements SubjectCollection {
 
     @Override
     public Map<Subject, Boolean> getAllWithPermission(String s) {
-        return null;
+        Set<io.github.djxy.permissionManager.subjects.Subject> subs = PermissionManager.getInstance().getSubjectWithPermission(s);
+        HashMap<Subject, Boolean> subjects = new HashMap<>(subs.size());
+
+        for(io.github.djxy.permissionManager.subjects.Subject sub : subs){
+            Subject subject = get(sub.getIdentifier());
+
+            if(subject != null)
+                subjects.put(subject, true);
+        }
+
+
+        return subjects;
     }
 
     @Override
     public Map<Subject, Boolean> getAllWithPermission(Set<Context> set, String s) {
-        return null;
+        if(SubjectUtil.isWorldContext(set)){
+            Set<io.github.djxy.permissionManager.subjects.Subject> subs = PermissionManager.getInstance().getSubjectWithPermission(SubjectUtil.getWorldFromContext(set), s);
+            HashMap<Subject, Boolean> subjects = new HashMap<>(subs.size());
+
+            for(io.github.djxy.permissionManager.subjects.Subject sub : subs){
+                Subject subject = get(sub.getIdentifier());
+
+                if(subject != null)
+                    subjects.put(subject, true);
+            }
+
+            return subjects;
+        }
+        else
+            return new HashMap<>();
     }
 
 }
