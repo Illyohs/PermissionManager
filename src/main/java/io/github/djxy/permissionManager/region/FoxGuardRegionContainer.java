@@ -15,7 +15,7 @@ public class FoxGuardRegionContainer implements RegionContainer {
         IRegion reg = FGManager.getInstance().getRegion(world, region);
 
         if(reg != null)
-            return reg.isInRegion(player.getLocation().getBlockPosition());
+            return reg.isInRegion(player.getLocation().getPosition());
         else
             return false;
     }
