@@ -54,7 +54,7 @@ public abstract class PMSubjectCollection implements SubjectCollection {
 
     @Override
     public Map<Subject, Boolean> getAllWithPermission(String s) {
-        Set<io.github.djxy.permissionManager.subjects.Subject> subs = PermissionManager.getInstance().getSubjectWithPermission(s);
+        Set<io.github.djxy.permissionManager.subjects.Subject> subs = PermissionManager.getInstance().getSubjectsWithPermission(s);
         HashMap<Subject, Boolean> subjects = new HashMap<>(subs.size());
 
         for(io.github.djxy.permissionManager.subjects.Subject sub : subs){
@@ -71,7 +71,7 @@ public abstract class PMSubjectCollection implements SubjectCollection {
     @Override
     public Map<Subject, Boolean> getAllWithPermission(Set<Context> set, String s) {
         String location = SubjectUtil.isWorldContext(set)?SubjectUtil.getWorldFromContext(set): io.github.djxy.permissionManager.subjects.Subject.GLOBAL_LOCATION;
-        Set<io.github.djxy.permissionManager.subjects.Subject> subs = PermissionManager.getInstance().getSubjectWithPermission(location, s);
+        Set<io.github.djxy.permissionManager.subjects.Subject> subs = PermissionManager.getInstance().getSubjectsWithPermission(location, s);
         HashMap<Subject, Boolean> subjects = new HashMap<>(subs.size());
 
         for(io.github.djxy.permissionManager.subjects.Subject sub : subs){
