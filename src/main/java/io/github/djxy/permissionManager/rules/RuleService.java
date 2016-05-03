@@ -26,7 +26,7 @@ public class RuleService {
     private final HashMap<String,Node> ruleNodes;
     private final HashMap<Class<? extends Rule>,String> ruleClassesByClass;
 
-    public RuleService() {
+    private RuleService() {
         this.ruleClassesByName = new HashMap<>();
         this.ruleNodes = new HashMap<>();
         this.ruleClassesByClass = new HashMap<>();
