@@ -34,10 +34,8 @@ public class TimeRule implements Rule {
     public void initFromNode(ConfigurationNode configurationNode) {
         List<ConfigurationNode> nodes = (List<ConfigurationNode>) configurationNode.getChildrenList();
 
-        for(ConfigurationNode node : nodes){
-            System.out.println(node.getNode("begin").getValue());
-            System.out.println(node.getNode("end").getValue());
-        }
+        for(ConfigurationNode node : nodes)
+            addTimeLapse(new TimeLapse(node.getNode("begin").getInt(), node.getNode("end").getInt()));
     }
 
     @Override
@@ -75,7 +73,7 @@ public class TimeRule implements Rule {
             int worldTime = (int) (world.getProperties().getWorldTime()%24000);
 
             if(beginBigger)
-                return worldTime >= begin || worldTime <= end;
+                return end >= worldTime || worldTime >= begin;
             else
                 return end >= worldTime && worldTime >= begin;
         }
