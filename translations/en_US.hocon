@@ -1,0 +1,2 @@
+createGroup="The group {group} has been created."
+createGroupAlreadyExist="The group {group} already exist."

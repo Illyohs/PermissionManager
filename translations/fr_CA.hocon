@@ -1,1 +1,2 @@
-test="Rien à voir!! Test"
+createGroup="Le groupe {group} a été créé."
+createGroupAlreadyExist="Le groupe {group} existe déjà."
