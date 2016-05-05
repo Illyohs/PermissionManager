@@ -1,12 +1,12 @@
 package io.github.djxy.permissionManager.commands.executors;
 
+import io.github.djxy.core.CoreUtil;
+import io.github.djxy.permissionManager.Main;
 import io.github.djxy.permissionManager.Permissions;
 import io.github.djxy.permissionManager.commands.CommandExecutor;
 import io.github.djxy.permissionManager.subjects.Group;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
-import org.spongepowered.api.text.format.TextStyles;
 
 import java.util.Map;
 import java.util.UUID;
@@ -31,22 +31,18 @@ public class DeleteGroupExecutor extends CommandExecutor {
 
         timeValid.put(random, time);
 
-        source.sendMessage(
-                PREFIX.concat(Text.of("To delete ", INFO_COLOR, subject.getIdentifier(), RESET_COLOR, " ",
-                        TextActions.executeCallback(
-                                source1 -> {
-                                    long currentTime = System.currentTimeMillis()/1000;
+        source.sendMessage(Main.getTranslatorInstance().translate(source, "deleteGroup", CoreUtil.createMap("group", subject.getIdentifier(), "clickHere", TextActions.executeCallback(
+                source1 -> {
+                    long currentTime = System.currentTimeMillis() / 1000;
 
-                                    if(timeValid.containsKey(random) && timeValid.get(random)+15 >= currentTime) {
-                                        timeValid.remove(random);
-                                        source.sendMessage(PREFIX.concat(Text.of(INFO_COLOR, subject.getIdentifier(), RESET_COLOR, " has been deleted.")));
-                                        subject.delete();
-                                    }
-                                    else
-                                        source.sendMessage(PREFIX.concat(ACTION_NO_LONGER_POSSIBLE));
-                                }
-                        ),
-                        WARNING_COLOR, TextStyles.UNDERLINE, "click here", RESET_COLOR, RESET_STYLE, ".")));
+                    if (timeValid.containsKey(random) && timeValid.get(random) + 15 >= currentTime) {
+                        timeValid.remove(random);
+                        source.sendMessage(Main.getTranslatorInstance().translate(source, "deleteGroupConfirmed", CoreUtil.createMap("group", subject.getIdentifier())));
+                        subject.delete();
+                    } else
+                        source.sendMessage(PREFIX.concat(ACTION_NO_LONGER_POSSIBLE));
+                }
+        ))));
     }
 
 }

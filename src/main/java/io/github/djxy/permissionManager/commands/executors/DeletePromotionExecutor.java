@@ -1,13 +1,13 @@
 package io.github.djxy.permissionManager.commands.executors;
 
+import io.github.djxy.core.CoreUtil;
+import io.github.djxy.permissionManager.Main;
 import io.github.djxy.permissionManager.Permissions;
 import io.github.djxy.permissionManager.commands.CommandExecutor;
 import io.github.djxy.permissionManager.promotions.Promotion;
 import io.github.djxy.permissionManager.promotions.PromotionManager;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
-import org.spongepowered.api.text.format.TextStyles;
 
 import java.util.Map;
 import java.util.UUID;
@@ -32,20 +32,17 @@ public class DeletePromotionExecutor extends CommandExecutor {
 
         timeValid.put(random, time);
 
-        source.sendMessage(
-                PREFIX.concat(Text.of("To delete the promotion ", INFO_COLOR, promotion.getName(), RESET_COLOR, " ",
-                        TextActions.executeCallback(
-                                source1 -> {
-                                    long currentTime = System.currentTimeMillis() / 1000;
+        source.sendMessage(Main.getTranslatorInstance().translate(source, "deletePromotion", CoreUtil.createMap("promotion", promotion.getName(), "clickHere", TextActions.executeCallback(
+                source1 -> {
+                    long currentTime = System.currentTimeMillis() / 1000;
 
-                                    if (timeValid.containsKey(random) && timeValid.get(random) + 15 >= currentTime) {
-                                        timeValid.remove(random);
-                                        source.sendMessage(PREFIX.concat(Text.of(INFO_COLOR, promotion.getName(), RESET_COLOR, " has been deleted.")));
-                                        PromotionManager.getInstance().removePromotion(promotion.getName());
-                                    } else
-                                        source.sendMessage(PREFIX.concat(ACTION_NO_LONGER_POSSIBLE));
-                                }
-                        ),
-                        WARNING_COLOR, TextStyles.UNDERLINE, "click here", RESET_COLOR, RESET_STYLE, ".")));
+                    if (timeValid.containsKey(random) && timeValid.get(random) + 15 >= currentTime) {
+                        timeValid.remove(random);
+                        source.sendMessage(Main.getTranslatorInstance().translate(source, "deletePromotionConfirmed", CoreUtil.createMap("promotion", promotion.getName())));
+                        PromotionManager.getInstance().removePromotion(promotion.getName());
+                    } else
+                        source.sendMessage(PREFIX.concat(ACTION_NO_LONGER_POSSIBLE));
+                }
+        ))));
     }
 }

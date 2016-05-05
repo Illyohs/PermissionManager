@@ -1,10 +1,11 @@
 package io.github.djxy.permissionManager.commands.executors;
 
+import io.github.djxy.core.CoreUtil;
+import io.github.djxy.permissionManager.Main;
 import io.github.djxy.permissionManager.PermissionManager;
 import io.github.djxy.permissionManager.Permissions;
 import io.github.djxy.permissionManager.commands.CommandExecutor;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.text.Text;
 
 import java.util.Map;
 
@@ -23,10 +24,10 @@ public class CreateGroupExecutor extends CommandExecutor {
 
         if(!PermissionManager.getInstance().hasGroup(group)) {
             PermissionManager.getInstance().getOrCreateGroup(group);
-            source.sendMessage(PREFIX.concat(Text.of(INFO_COLOR, group, RESET_COLOR, " has been created.")));
+            source.sendMessage(Main.getTranslatorInstance().translate(source, "createGroup", CoreUtil.createMap("group", group)));
         }
         else
-            source.sendMessage(PREFIX.concat(Text.of(INFO_COLOR, group, RESET_COLOR, " already exist.")));
+            source.sendMessage(Main.getTranslatorInstance().translate(source, "createGroupAlreadyExist", CoreUtil.createMap("group", group)));
     }
 
 }
