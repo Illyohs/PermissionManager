@@ -1,2 +1,6 @@
 createGroup="Le groupe {group} a été créé."
 createGroupAlreadyExist="Le groupe {group} existe déjà."
+createPromotion="La promotion {promotion} a été créée."
+createPromotionAlreadyExist="La promotion {promotion} existe déjà."
+setDefaultGroup="Le groupe par défaut est maintenant {group}."
+setDefaultSuffix="Le suffix par défaut est maintenant {suffix}."
