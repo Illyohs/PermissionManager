@@ -1,11 +1,12 @@
 package io.github.djxy.permissionManager.commands.executors;
 
+import io.github.djxy.core.CoreUtil;
 import io.github.djxy.core.repositories.PlayerRepository;
+import io.github.djxy.permissionManager.Main;
 import io.github.djxy.permissionManager.Permissions;
 import io.github.djxy.permissionManager.commands.CommandExecutor;
 import io.github.djxy.permissionManager.subjects.Player;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.Map;
@@ -26,7 +27,7 @@ public class PlayerSetSuffixExecutor extends CommandExecutor {
         String suffix = (String) values.get("suffix");
         String name = PlayerRepository.getInstance().getPlayerName(UUID.fromString(subject.getIdentifier()));
 
-        source.sendMessage(PREFIX.concat(Text.of("The suffix of ", INFO_COLOR, name, RESET_COLOR, " is now ").concat(TextSerializers.FORMATTING_CODE.deserialize(suffix+"&f").concat(Text.of(".")))));
+        source.sendMessage(Main.getTranslatorInstance().translate(source, "setPlayerSuffix", CoreUtil.createMap("player", name, "suffix", TextSerializers.FORMATTING_CODE.deserialize(suffix+"&f"))));
 
         subject.setSuffix(suffix);
     }

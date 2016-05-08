@@ -1,10 +1,11 @@
 package io.github.djxy.permissionManager.commands.executors;
 
+import io.github.djxy.core.CoreUtil;
+import io.github.djxy.permissionManager.Main;
 import io.github.djxy.permissionManager.Permissions;
 import io.github.djxy.permissionManager.commands.CommandExecutor;
 import io.github.djxy.permissionManager.subjects.Group;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.text.Text;
 
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class GroupSetRankExecutor extends CommandExecutor {
         Group subject = (Group) values.get("subject");
         int rank = (int) values.get("rank");
 
-        source.sendMessage(PREFIX.concat(Text.of("The rank of ", INFO_COLOR, subject.getIdentifier(), RESET_COLOR, " is now ", INFO_COLOR, rank, RESET_COLOR, ".")));
+        source.sendMessage(Main.getTranslatorInstance().translate(source, "setGroupRank", CoreUtil.createMap("group", subject.getIdentifier(), "rank", rank)));
 
         subject.setRank(rank);
     }

@@ -1,13 +1,14 @@
 package io.github.djxy.permissionManager.commands.executors;
 
 import io.github.djxy.core.repositories.PlayerRepository;
+import io.github.djxy.permissionManager.Main;
 import io.github.djxy.permissionManager.Permissions;
 import io.github.djxy.permissionManager.commands.CommandExecutor;
 import io.github.djxy.permissionManager.subjects.Player;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.World;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -26,8 +27,13 @@ public class PlayerSetDataWorldExecutor extends CommandExecutor {
         String value = (String) values.get("value");
         String worldName =((World) values.get("world")).getName();
         String name = PlayerRepository.getInstance().getPlayerName(subject.getUUID());
+        HashMap<String,Object> val = new HashMap<>();
+        val.put("key", key);
+        val.put("value", value);
+        val.put("player", name);
+        val.put("world", worldName);
 
-        source.sendMessage(PREFIX.concat(Text.of(INFO_COLOR, name, RESET_COLOR, " has now the value ", INFO_COLOR, key, RESET_COLOR, " set to ", INFO_COLOR, value, RESET_COLOR, " in the world ", INFO_COLOR, worldName, RESET_COLOR, ".")));
+        source.sendMessage(Main.getTranslatorInstance().translate(source, "setPlayerDataWorld", val));
         subject.setData(worldName, key, value);
     }
 

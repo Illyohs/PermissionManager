@@ -1,10 +1,11 @@
 package io.github.djxy.permissionManager.commands.executors;
 
+import io.github.djxy.core.CoreUtil;
+import io.github.djxy.permissionManager.Main;
 import io.github.djxy.permissionManager.Permissions;
 import io.github.djxy.permissionManager.commands.CommandExecutor;
 import io.github.djxy.permissionManager.subjects.Group;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.text.Text;
 
 import java.util.Map;
 
@@ -23,13 +24,12 @@ public class GroupSetName extends CommandExecutor {
         String name = (String) values.get("name");
 
         if(!group.getIdentifier().equals(name)) {
-            source.sendMessage(PREFIX.concat(Text.of(INFO_COLOR, group.getIdentifier(), RESET_COLOR, " is now named ", INFO_COLOR, name, RESET_COLOR, ".")));
+            source.sendMessage(Main.getTranslatorInstance().translate(source, "setGroupName", CoreUtil.createMap("group", group.getIdentifier(), "newName", name)));
 
             group.setIdentifier(name);
         }
         else
-            source.sendMessage(PREFIX.concat(Text.of(INFO_COLOR, group.getIdentifier(), RESET_COLOR, " is already named ", INFO_COLOR, name, RESET_COLOR, ".")));
-
+            source.sendMessage(Main.getTranslatorInstance().translate(source, "setGroupNameSameName", CoreUtil.createMap("group", group.getIdentifier(), "name", name)));
     }
 
 }
