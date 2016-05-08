@@ -1,15 +1,17 @@
 package io.github.djxy.permissionManager.commands.executors;
 
+import io.github.djxy.core.CoreUtil;
 import io.github.djxy.core.repositories.PlayerRepository;
+import io.github.djxy.permissionManager.Main;
 import io.github.djxy.permissionManager.Permissions;
 import io.github.djxy.permissionManager.commands.CommandExecutor;
 import io.github.djxy.permissionManager.subjects.Group;
 import io.github.djxy.permissionManager.subjects.Player;
 import io.github.djxy.permissionManager.subjects.Subject;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.World;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -25,34 +27,28 @@ public class SubjectAddGroupWorldExecutor extends CommandExecutor {
     public void execute(CommandSource source, Map<String, Object> values) {
         Subject subject = (Subject) values.get("subject");
         Group group = (Group) values.get("group");
-        String worldName =((World) values.get("world")).getName();
+        String worldName = ((World) values.get("world")).getName();
+        String name = subject instanceof Player?PlayerRepository.getInstance().getPlayerName(((Player) subject).getUUID()):subject.getIdentifier();
 
-        if(subject.hasGroup(group)){
-            if(subject instanceof Player){
-                String name = PlayerRepository.getInstance().getPlayerName(((Player) subject).getUUID());
-
-                source.sendMessage(PREFIX.concat(Text.of(INFO_COLOR, name, RESET_COLOR, " is already a member of the group ", INFO_COLOR, group.getIdentifier(), RESET_COLOR, ".")));
-            }
-            else
-                source.sendMessage(PREFIX.concat(Text.of(INFO_COLOR, subject.getIdentifier(), RESET_COLOR, " already inherit of the group ", INFO_COLOR, group.getIdentifier(), RESET_COLOR, ".")));
-        }
+        if(subject.hasGroup(group))
+            source.sendMessage(Main.getTranslatorInstance().translate(source, "subjectAddGroupAlreadyInGroup", CoreUtil.createMap("group", group.getIdentifier(), "subject", name)));
         else{
-
-            if(subject instanceof Player){
-                String name = PlayerRepository.getInstance().getPlayerName(((Player) subject).getUUID());
-
-                source.sendMessage(PREFIX.concat(Text.of(INFO_COLOR, name, RESET_COLOR,  " is now a member of the group ", INFO_COLOR, group.getIdentifier(), RESET_COLOR, " in the world ", INFO_COLOR, worldName, RESET_COLOR,".")));
+            if(!subject.getIdentifier().equals(group.getIdentifier())) {
+                source.sendMessage(Main.getTranslatorInstance().translate(source, "subjectAddGroupWorld", createMap("group", group.getIdentifier(), "subject", name, "world", worldName)));
                 subject.addGroup(worldName, group);
             }
-            else {
-                if(!subject.getIdentifier().equals(group.getIdentifier())) {
-                    source.sendMessage(PREFIX.concat(Text.of(INFO_COLOR, subject.getIdentifier(), RESET_COLOR, " inherit of the group ", INFO_COLOR, group.getIdentifier(), RESET_COLOR, " in the world ", INFO_COLOR, worldName, RESET_COLOR, ".")));
-                    subject.addGroup(worldName, group);
-                }
-                else
-                    source.sendMessage(PREFIX.concat(Text.of(INFO_COLOR, subject.getIdentifier(), RESET_COLOR, " can't inherit of the group ", INFO_COLOR, group.getIdentifier(), RESET_COLOR, ".")));
-            }
+            else
+                source.sendMessage(Main.getTranslatorInstance().translate(source, "subjectAddGroupSameSubject", CoreUtil.createMap("subject", name)));
         }
     }
 
+    private Map<String,Object> createMap(String key1, Object value1, String key2, Object value2, String key3, Object value3){
+        HashMap<String,Object> map = new HashMap<>();
+
+        map.put(key1, value1);
+        map.put(key2, value2);
+        map.put(key3, value3);
+
+        return map;
+    }
 }
