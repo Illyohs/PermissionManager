@@ -40,7 +40,7 @@ public class DeleteGroupExecutor extends CommandExecutor {
                         source.sendMessage(Main.getTranslatorInstance().translate(source, "deleteGroupConfirmed", CoreUtil.createMap("group", subject.getIdentifier())));
                         subject.delete();
                     } else
-                        source.sendMessage(PREFIX.concat(ACTION_NO_LONGER_POSSIBLE));
+                        source.sendMessage(Main.getTranslatorInstance().translate(source, "actionNoLongerPossible", null));
                 }
         ))));
     }

@@ -41,7 +41,7 @@ public class DeletePromotionExecutor extends CommandExecutor {
                         source.sendMessage(Main.getTranslatorInstance().translate(source, "deletePromotionConfirmed", CoreUtil.createMap("promotion", promotion.getName())));
                         PromotionManager.getInstance().removePromotion(promotion.getName());
                     } else
-                        source.sendMessage(PREFIX.concat(ACTION_NO_LONGER_POSSIBLE));
+                        source.sendMessage(Main.getTranslatorInstance().translate(source, "actionNoLongerPossible", null));
                 }
         ))));
     }
