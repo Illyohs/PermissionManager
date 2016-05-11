@@ -1,11 +1,16 @@
 package io.github.djxy.permissionManager;
 
 import com.google.inject.Inject;
+import io.github.djxy.core.CorePlugin;
+import io.github.djxy.core.CoreUtil;
 import io.github.djxy.core.commands.Command;
+import io.github.djxy.core.commands.executors.FileSaveExecutor;
+import io.github.djxy.core.commands.executors.FileSetFormatExecutor;
 import io.github.djxy.core.commands.nodes.ChoiceNode;
 import io.github.djxy.core.commands.nodes.MultipleNode;
 import io.github.djxy.core.commands.nodes.Node;
 import io.github.djxy.core.commands.nodes.arguments.*;
+import io.github.djxy.core.files.FileManager;
 import io.github.djxy.core.files.fileManagers.TranslationsFile;
 import io.github.djxy.core.translation.Translator;
 import io.github.djxy.permissionManager.commands.arguments.GroupSubjectNode;
@@ -13,7 +18,10 @@ import io.github.djxy.permissionManager.commands.arguments.PermissionNode;
 import io.github.djxy.permissionManager.commands.arguments.PlayerSubjectNode;
 import io.github.djxy.permissionManager.commands.arguments.PromotionNode;
 import io.github.djxy.permissionManager.commands.executors.*;
-import io.github.djxy.permissionManager.fileManagers.*;
+import io.github.djxy.permissionManager.fileManagers.ConfigFile;
+import io.github.djxy.permissionManager.fileManagers.GroupFile;
+import io.github.djxy.permissionManager.fileManagers.PlayerFile;
+import io.github.djxy.permissionManager.fileManagers.PromotionFile;
 import io.github.djxy.permissionManager.home.HomeService;
 import io.github.djxy.permissionManager.home.RedProtectHomeContainer;
 import io.github.djxy.permissionManager.pmSubjects.PMPlayerSubject;
@@ -21,12 +29,11 @@ import io.github.djxy.permissionManager.region.FoxGuardRegionContainer;
 import io.github.djxy.permissionManager.region.RedProtectRegionContainer;
 import io.github.djxy.permissionManager.region.RegionService;
 import io.github.djxy.permissionManager.subjects.Player;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.command.SendCommandEvent;
+import org.spongepowered.api.event.game.state.GameConstructionEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.event.message.MessageChannelEvent;
@@ -36,36 +43,93 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
  * Created by Samuel on 2016-03-20.
  */
-@Plugin(id = "permissionmanager", name = "Permission Manager", version = "1.0", dependencies = @Dependency(id = "djxycore"))
-public class Main {
+@Plugin(id = "permissionmanager", name = "PermissionManager", version = "1.0", dependencies = @Dependency(id = "djxycore"))
+public class Main implements CorePlugin {
 
-    private static Translator translatorInstance;
+    private static Main instance;
 
-    public static Translator getTranslatorInstance(){
-        return translatorInstance;
+    public static Main getInstance() {
+        return instance;
     }
 
-    @Inject
-    @DefaultConfig(sharedRoot = false)
-    private Path path;
+    public static Translator getTranslatorInstance(){
+        return instance.getTranslator();
+    }
 
-    private Logger logger = LoggerFactory.getLogger("PermissionManager");
-
+    @Inject @DefaultConfig(sharedRoot = false) private Path path;
     private PlayerFile players;
     private GroupFile groups;
     private ConfigFile config;
     private PromotionFile promotions;
-    private Translator translator;
-    private ArrayList<TranslationsFile> translationsFiles;
+    private Translator translator = new Translator(TextSerializers.FORMATTING_CODE.deserialize("&f[&6Permission&l&4M&r&f] "));
+    private ArrayList<FileManager> translationsFiles;
+
+    @Override
+    public String getGithubApiURL() {
+        return "https://api.github.com/repos/djxy/PermissionManager";
+    }
+
+    @Override
+    public Path getTranslationPath() {
+        return path.getParent().resolve("translations");
+    }
+
+    @Override
+    public Translator getTranslator() {
+        return translator;
+    }
+
+    @Override
+    public void loadTranslations() {
+        translationsFiles = CoreUtil.loadTranslationFiles(getTranslationPath(), translator);
+    }
+
+    @Override
+    public List<FileManager> getFileManagers(Class<? extends FileManager>... classes) {
+        List<FileManager> fileManagers = new ArrayList<>();
+
+        for(Class<? extends FileManager> clazz : classes){
+            if(clazz == TranslationsFile.class) fileManagers.addAll((Collection<? extends FileManager>) translationsFiles.clone());
+            else if(clazz == PlayerFile.class) fileManagers.add(players);
+            else if(clazz == ConfigFile.class) fileManagers.add(config);
+            else if(clazz == GroupFile.class) fileManagers.add(groups);
+            else if(clazz == PromotionFile.class) fileManagers.add(promotions);
+        }
+
+        return fileManagers;
+    }
+
+    @Override
+    public FileManager getFileManager(String name, Class<? extends FileManager>... classes) {
+        for(Class<? extends FileManager> clazz : classes){
+            if(clazz == TranslationsFile.class) {
+                for (FileManager translationsFile : translationsFiles)
+                    if (translationsFile.getName().equals(name))
+                        return translationsFile;
+            }
+            else if(clazz == PlayerFile.class && players.getName().equals(name)) return players;
+            else if(clazz == ConfigFile.class && config.getName().equals(name)) return config;
+            else if(clazz == GroupFile.class && groups.getName().equals(name)) return groups;
+            else if(clazz == PromotionFile.class && promotions.getName().equals(name)) return promotions;
+        }
+
+        return null;
+    }
+
+    @Listener
+    public void onGameConstructionEvent(GameConstructionEvent event) {
+        instance = this;
+    }
 
     @Listener
     public void onGamePreInitializationEvent(GamePreInitializationEvent event) throws IOException {
@@ -76,51 +140,12 @@ public class Main {
             HomeService.getInstance().addHomeContainer(new RedProtectHomeContainer());
         }
 
-        Path languagesPath = path.getParent().resolve("languages");
-        File languagesFolder = languagesPath.toFile();
-        translator = new Translator();
-        translatorInstance = translator;
-        translationsFiles = new ArrayList<>();
-
-        for(File language : languagesFolder.listFiles()) {
-            try {
-                TranslationsFile translationsFile = new TranslationsFile(languagesPath, language.getName().substring(0, language.getName().indexOf('.')), translator);
-
-                translationsFile.load();
-                translationsFiles.add(translationsFile);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        try {
-            players = new PlayerFile(path.getParent());
-
-            players.load();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            groups = new GroupFile(path.getParent());
-
-            groups.load();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            promotions = new PromotionFile(path.getParent());
-
-            promotions.load();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            config = new ConfigFile(path.getParent(), this, players, groups, promotions);
-
-            config.load();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        CoreUtil.loadFileManagers(
+                players = new PlayerFile(path.getParent()),
+                groups = new GroupFile(path.getParent()),
+                promotions = new PromotionFile(path.getParent()),
+                config = new ConfigFile(path.getParent(), this, players, groups, promotions)
+        );
 
         if(PermissionManager.getInstance().getDefaultGroup() == null)
             PermissionManager.getInstance().setDefaultGroup(PermissionManager.getInstance().getOrCreateGroup("default"));
@@ -132,26 +157,7 @@ public class Main {
 
     @Listener
     public void onGameStoppingServerEvent(GameStoppingServerEvent event){
-        try {
-            players.save();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            promotions.save();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            groups.save();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            config.save();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        CoreUtil.saveFileManagers(players, promotions, groups, config);
     }
 
     @Listener
@@ -175,10 +181,6 @@ public class Main {
     @Listener
     public void onJoin(ClientConnectionEvent.Login event){
         PermissionManager.getInstance().getOrCreatePlayer(event.getProfile().getUniqueId(), true);
-    }
-
-    @Listener
-    public void onJoin(ClientConnectionEvent.Join event){
     }
 
     private Command createCommand(){
@@ -220,7 +222,7 @@ public class Main {
                                 .setExecutor(new CreatePromotionExecutor()))
                         .addNode(new StringNode("group")
                                 .setExecutor(new CreateGroupExecutor())))
-                .addNode(new FileManagerNode("file", config, groups, players, promotions)
+                .addNode(new FileManagerNode("file", this, config.getClass(), groups.getClass(), players.getClass(), promotions.getClass())
                         .addNode(new ChoiceNode("save")
                                 .setExecutor(new FileSaveExecutor()))
                         .addNode(new ChoiceNode("set")
@@ -302,5 +304,4 @@ public class Main {
             return false;
         }
     }
-
 }
