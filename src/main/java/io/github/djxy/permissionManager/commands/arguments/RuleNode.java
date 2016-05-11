@@ -47,7 +47,7 @@ public class RuleNode extends Node {
             if(next != null)
                 return next.getSuggestion(args, index + 1);
             else
-                return EMPTY;
+                return EMPTY_LIST;
         }
         else
             return complete(args[index].toLowerCase());

@@ -1,6 +1,6 @@
 package io.github.djxy.permissionManager.commands.executors;
 
-import io.github.djxy.permissionManager.commands.CommandExecutor;
+import io.github.djxy.core.commands.CommandExecutor;
 import io.github.djxy.permissionManager.rules.Rule;
 import io.github.djxy.permissionManager.subjects.Permission;
 import io.github.djxy.permissionManager.subjects.Subject;
@@ -14,7 +14,7 @@ import java.util.Map;
 public class SubjectSetPermissionRuleExecutor extends CommandExecutor {
 
     public SubjectSetPermissionRuleExecutor() {
-        setPermission("7213862394562397852059845");
+        setPermission("");
     }
 
     @Override

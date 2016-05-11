@@ -1,9 +1,9 @@
 package io.github.djxy.permissionManager.commands.executors;
 
 import io.github.djxy.core.CoreUtil;
+import io.github.djxy.core.commands.CommandExecutor;
 import io.github.djxy.core.repositories.PlayerRepository;
 import io.github.djxy.permissionManager.Main;
-import io.github.djxy.permissionManager.commands.CommandExecutor;
 import io.github.djxy.permissionManager.subjects.Permission;
 import io.github.djxy.permissionManager.subjects.Player;
 import io.github.djxy.permissionManager.subjects.Subject;

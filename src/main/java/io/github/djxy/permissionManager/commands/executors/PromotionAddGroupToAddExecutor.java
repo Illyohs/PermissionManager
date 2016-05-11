@@ -1,9 +1,9 @@
 package io.github.djxy.permissionManager.commands.executors;
 
 import io.github.djxy.core.CoreUtil;
+import io.github.djxy.core.commands.CommandExecutor;
 import io.github.djxy.permissionManager.Main;
 import io.github.djxy.permissionManager.Permissions;
-import io.github.djxy.permissionManager.commands.CommandExecutor;
 import io.github.djxy.permissionManager.promotions.Promotion;
 import io.github.djxy.permissionManager.subjects.Group;
 import org.spongepowered.api.command.CommandException;
@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Created by Samuel on 2016-04-14.
  */
-public class PromotionAddGroupToAddExecutor extends CommandExecutor{
+public class PromotionAddGroupToAddExecutor extends CommandExecutor {
 
     public PromotionAddGroupToAddExecutor() {
         setPermission(Permissions.PROMOTION_ADD_GROUP);
