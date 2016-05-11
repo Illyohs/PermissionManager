@@ -1,6 +1,6 @@
 package io.github.djxy.permissionManager.rules;
 
-import io.github.djxy.permissionManager.commands.CommandExecutor;
+import io.github.djxy.core.commands.CommandExecutor;
 import io.github.djxy.permissionManager.subjects.Permission;
 import io.github.djxy.permissionManager.subjects.Subject;
 import org.spongepowered.api.command.CommandException;
