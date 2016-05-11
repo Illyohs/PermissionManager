@@ -1,12 +1,13 @@
 package io.github.djxy.permissionManager.commands.executors;
 
+import io.github.djxy.core.CoreUtil;
 import io.github.djxy.core.repositories.PlayerRepository;
+import io.github.djxy.permissionManager.Main;
 import io.github.djxy.permissionManager.commands.CommandExecutor;
 import io.github.djxy.permissionManager.subjects.Permission;
 import io.github.djxy.permissionManager.subjects.Player;
 import io.github.djxy.permissionManager.subjects.Subject;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.text.Text;
 
 import java.util.Map;
 
@@ -20,19 +21,14 @@ public class SubjectRemovePermissionExecutor extends CommandExecutor {
         Subject subject = (Subject) values.get("subject");
         String permission = (String) values.get("permission");
         Permission perm = subject.getPermission(permission);
+        String name = subject instanceof Player? PlayerRepository.getInstance().getPlayerName(((Player) subject).getUUID()):subject.getIdentifier();
 
         if(perm != null) {
-            String name = subject instanceof Player? PlayerRepository.getInstance().getPlayerName(((Player) subject).getUUID()):subject.getIdentifier();
-
-            source.sendMessage(PREFIX.concat(Text.of(INFO_COLOR, name, RESET_COLOR, " no longer has the permission ", INFO_COLOR, permission, RESET_COLOR, " globally.")));
-
+            source.sendMessage(Main.getTranslatorInstance().translate(source, "subjectRemovePermission", CoreUtil.createMap("subject", name, "permission", permission)));
             subject.removePermission(permission);
         }
-        else {
-            String name = subject instanceof Player?PlayerRepository.getInstance().getPlayerName(((Player) subject).getUUID()):subject.getIdentifier();
-
-            source.sendMessage(PREFIX.concat(Text.of(INFO_COLOR, name, RESET_COLOR, " doesn't have the permission ", INFO_COLOR, permission, RESET_COLOR, " globally.")));
-        }
+        else
+            source.sendMessage(Main.getTranslatorInstance().translate(source, "subjectRemovePermissionDoesntHavePerm", CoreUtil.createMap("subject", name, "permission", permission)));
     }
 
 }
