@@ -53,7 +53,7 @@ import java.util.Optional;
 /**
  * Created by Samuel on 2016-03-20.
  */
-@Plugin(id = "permissionmanager", name = "PermissionManager", version = "1.0", dependencies = @Dependency(id = "djxycore"))
+@Plugin(id = "permissionmanager", name = "PermissionManager", version = "v1.0", dependencies = @Dependency(id = "djxycore"))
 public class Main implements CorePlugin {
 
     private static Main instance;
