@@ -33,7 +33,16 @@ public abstract class PMSubject implements Subject, SubjectData {
 
     @Override
     public Optional<CommandSource> getCommandSource() {
-        return isPlayer?Optional.of(Sponge.getServer().getPlayer(((Player)subject).getUUID()).get()):Optional.empty();
+        if(isPlayer){
+            Optional<org.spongepowered.api.entity.living.player.Player> player = Sponge.getServer().getPlayer(((Player)subject).getUUID());
+
+            if(player.isPresent())
+                return Optional.of(player.get());
+            else
+                return Optional.empty();
+        }
+        else
+            return Optional.empty();
     }
 
     @Override
