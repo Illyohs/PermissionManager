@@ -1,8 +1,10 @@
 package io.github.djxy.permissionManager;
 
+import io.github.djxy.permissionManager.pmSubjects.PMCustomSubject;
 import io.github.djxy.permissionManager.pmSubjects.PMCustomSubjectCollection;
 import io.github.djxy.permissionManager.pmSubjects.PMGroupSubjectCollection;
 import io.github.djxy.permissionManager.pmSubjects.PMPlayerSubjectCollection;
+import io.github.djxy.permissionManager.subjects.CustomSubject;
 import org.spongepowered.api.service.context.ContextCalculator;
 import org.spongepowered.api.service.permission.*;
 
@@ -20,6 +22,7 @@ public class PMService implements PermissionService {
     }
 
     private final HashMap<String,SubjectCollection> collections;
+    private final SubjectData defaultSubject = new PMCustomSubject(new CustomSubject(""), new PMCustomSubjectCollection(""));
 
     private PMService(){
         this.collections = new HashMap<>();
@@ -42,7 +45,7 @@ public class PMService implements PermissionService {
 
     @Override
     public SubjectData getDefaultData() {
-        return this.collections.get(PermissionService.SUBJECTS_GROUP).get(PermissionManager.getInstance().getDefaultGroup().getIdentifier()).getSubjectData();
+        return defaultSubject;
     }
 
     @Override
