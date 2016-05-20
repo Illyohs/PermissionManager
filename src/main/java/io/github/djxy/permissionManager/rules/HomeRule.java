@@ -7,6 +7,9 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.world.World;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,10 +19,10 @@ public class HomeRule implements Rule {
 
     public static final String RULE_NAME = "home";
 
-    private String world = null;
+    private List<String> worlds = null;
 
     public HomeRule(String world) {
-        this.world = world;
+        this.worlds = Arrays.asList(world);
     }
 
     public HomeRule() {
@@ -27,7 +30,7 @@ public class HomeRule implements Rule {
 
     @Override
     public boolean canApplyRule(Player player) {
-        return (world == null || player.getWorld().getName().equals(world)) && HomeService.getInstance().isPlayerInHome(player, player.getWorld());
+        return (worlds == null || worlds.contains(player.getWorld().getName())) && HomeService.getInstance().isPlayerInHome(player, player.getWorld());
     }
 
     @Override
@@ -35,15 +38,24 @@ public class HomeRule implements Rule {
 
     @Override
     public void initFromNode(ConfigurationNode node) {
-        String world = node.getNode("world").getString("*");
+        if(node.getNode("world").hasListChildren()){
+            List<ConfigurationNode> worlds = (List<ConfigurationNode>) node.getNode("world").getChildrenList();
+            this.worlds = new ArrayList<>();
 
-        if(!world.equals("*"))
-            this.world = world;
+            for(ConfigurationNode world : worlds)
+                this.worlds.add(world.getString());
+        }
+        else {
+            String world = node.getNode("world").getString("*");
+
+            if(!world.equals("*"))
+                this.worlds = Arrays.asList(world);
+        }
     }
 
     @Override
     public void setNode(ConfigurationNode node) {
-        node.getNode("world").setValue(world == null?"*":world);
+        node.getNode("world").setValue(worlds == null?"*": worlds);
     }
 
     public static class ExecutorWithoutWorld extends RuleExecutor {
