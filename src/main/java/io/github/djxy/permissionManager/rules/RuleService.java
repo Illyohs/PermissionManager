@@ -35,6 +35,7 @@ public class RuleService {
         addRule(RegionRule.RULE_NAME, RegionRule.class, new WorldNode("world", "worldRule").addNode(new StringNode("location").setExecutor(new RegionRule.Executor())));
         addRule(HomeRule.RULE_NAME, HomeRule.class, new ChoiceNode("global").setExecutor(new HomeRule.ExecutorWithoutWorld()), new WorldNode("world", "worldRule").setExecutor(new HomeRule.ExecutorWithWorld()));
         addRule(TimeRule.RULE_NAME, TimeRule.class);
+        addRule(NationRule.RULE_NAME, NationRule.class);
     }
 
     public List<String> getRulesName() {
