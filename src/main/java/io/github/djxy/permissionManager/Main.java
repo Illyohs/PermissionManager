@@ -23,6 +23,7 @@ import io.github.djxy.permissionManager.fileManagers.GroupFile;
 import io.github.djxy.permissionManager.fileManagers.PlayerFile;
 import io.github.djxy.permissionManager.fileManagers.PromotionFile;
 import io.github.djxy.permissionManager.home.HomeService;
+import io.github.djxy.permissionManager.home.NationHomeContainer;
 import io.github.djxy.permissionManager.home.RedProtectHomeContainer;
 import io.github.djxy.permissionManager.pmSubjects.PMPlayerSubject;
 import io.github.djxy.permissionManager.region.FoxGuardRegionContainer;
@@ -133,9 +134,11 @@ public class Main implements CorePlugin {
 
     @Listener
     public void onGamePreInitializationEvent(GamePreInitializationEvent event) throws IOException {
-        if(isClassLoaded("net.foxdenstudio.sponge.foxguard.plugin.FGManager"))
+        if(Sponge.getPluginManager().isLoaded("foxguard"))
             RegionService.getInstance().addRegionContainer(new FoxGuardRegionContainer());
-        if(isClassLoaded("br.net.fabiozumbi12.redprotect.API.RedProtectAPI")){
+        if(Sponge.getPluginManager().isLoaded("com.arckenver.nations"))
+            HomeService.getInstance().addHomeContainer(new NationHomeContainer());
+        if(Sponge.getPluginManager().isLoaded("br.net.fabiozumbi12.redprotect")){
             RegionService.getInstance().addRegionContainer(new RedProtectRegionContainer());
             HomeService.getInstance().addHomeContainer(new RedProtectHomeContainer());
         }
@@ -296,12 +299,4 @@ public class Main implements CorePlugin {
         return new Command(root);
     }
 
-    private boolean isClassLoaded(String className){
-        try{
-            Class.forName(className);
-            return true;
-        }catch (Exception e){
-            return false;
-        }
-    }
 }
