@@ -1,7 +1,6 @@
 package io.github.djxy.permissionManager.home;
 
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.world.World;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -29,9 +28,9 @@ public class HomeService {
         homeContainers.remove(homeContainer);
     }
 
-    public boolean isPlayerInHome(Player player, World world){
+    public boolean isPlayerInHome(Player player){
         for(HomeContainer homeContainer : homeContainers)
-            if(homeContainer.isPlayerIn(player, world))
+            if(homeContainer.isPlayerIn(player))
                 return true;
 
         return false;

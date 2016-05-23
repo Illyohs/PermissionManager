@@ -30,7 +30,7 @@ public class HomeRule implements Rule {
 
     @Override
     public boolean canApplyRule(Player player) {
-        return (worlds == null || worlds.contains(player.getWorld().getName())) && HomeService.getInstance().isPlayerInHome(player, player.getWorld());
+        return (worlds == null || worlds.contains(player.getWorld().getName())) && HomeService.getInstance().isPlayerInHome(player);
     }
 
     @Override
