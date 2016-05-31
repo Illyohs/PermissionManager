@@ -29,6 +29,8 @@ public abstract class Subject implements ObjectSerializer {
     private final Map<Group, String> groupsLocation;
     private final Map<String, Map<String, String>> datas;//Key/Location/Value
     private String prefix = "";
+    private String suffix = "";
+    private String textFormat;
 
     public Subject(String identifier) {
         this.identifier = identifier;
@@ -40,6 +42,22 @@ public abstract class Subject implements ObjectSerializer {
         this.groupsLocation = new ConcurrentHashMap<>();
         this.listener = new Listener();
         this.datas = new ConcurrentHashMap<>();
+    }
+
+    public String getTextFormat() {
+        return textFormat;
+    }
+
+    public void setTextFormat(String textFormat) {
+        this.textFormat = textFormat;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
     }
 
     public String getPrefix() {
@@ -434,7 +452,9 @@ public abstract class Subject implements ObjectSerializer {
 
     @Override
     public void initFromNode(ConfigurationNode node){
+        textFormat = node.getNode("format", "text").getString(null);
         prefix = node.getNode("prefix").getString("");
+        suffix = node.getNode("suffix").getString("");
 
         if(!node.getNode("permissions").isVirtual()){
             List<ConfigurationNode> permissions = (List<ConfigurationNode>) node.getNode("permissions").getChildrenList();
@@ -542,6 +562,10 @@ public abstract class Subject implements ObjectSerializer {
     @Override
     public void setNode(ConfigurationNode node){
         node.getNode("prefix").setValue(prefix);
+        node.getNode("suffix").setValue(suffix);
+
+        if(textFormat != null)
+            node.getNode("format", "text").setValue(textFormat);
 
         if(!globalPermissions.isEmpty()) {
             List<String> permissions = new ArrayList<>(globalPermissions.values().size());
@@ -603,6 +627,10 @@ public abstract class Subject implements ObjectSerializer {
                 }
             }
         }
+    }
+
+    protected String getGroupLocation(Group group){
+        return groupsLocation.containsKey(group)?groupsLocation.get(group):null;
     }
 
     private void removeGroup(Group group, boolean sort){

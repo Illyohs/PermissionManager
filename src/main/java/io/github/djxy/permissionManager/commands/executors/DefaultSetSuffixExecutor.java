@@ -23,7 +23,7 @@ public class DefaultSetSuffixExecutor extends CommandExecutor {
     public void execute(CommandSource source, Map<String, Object> values) {
         String suffix = (String) values.get("suffix");
 
-        Player.SUFFIX = suffix;
+        Player.PLAYER_NAME_FORMAT = suffix;
         source.sendMessage(Main.getTranslatorInstance().translate(source, "setDefaultSuffix", CoreUtil.createMap("suffix", TextSerializers.FORMATTING_CODE.deserialize(suffix))));
     }
 

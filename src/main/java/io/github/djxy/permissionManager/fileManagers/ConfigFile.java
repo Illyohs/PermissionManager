@@ -49,14 +49,16 @@ public class ConfigFile extends FileManager {
     @Override
     protected void save(ConfigurationNode root) {
         root.getNode("timeIntervalForSaving").setValue(timeIntervalForSaving);
-        root.getNode("suffix").setValue(Player.SUFFIX);
+        root.getNode("defaultNameFormat").setValue(Player.PLAYER_NAME_FORMAT);
         root.getNode("commandAlias").setValue(commandAlias);
     }
 
     @Override
     protected void load(ConfigurationNode root) {
         if(!root.getNode("suffix").isVirtual())
-            Player.SUFFIX = root.getNode("suffix").getString();
+            Player.PLAYER_NAME_FORMAT = root.getNode("suffix").getString();
+        else if(!root.getNode("defaultNameFormat").isVirtual())
+            Player.PLAYER_NAME_FORMAT = root.getNode("defaultNameFormat").getString();
 
         if(!root.getNode("commandAlias").isVirtual())
             commandAlias = root.getNode("commandAlias").getString();

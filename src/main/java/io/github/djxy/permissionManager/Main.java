@@ -42,6 +42,7 @@ import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.permission.PermissionService;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.io.IOException;
@@ -54,7 +55,7 @@ import java.util.Optional;
 /**
  * Created by Samuel on 2016-03-20.
  */
-@Plugin(id = "permissionmanager", name = "PermissionManager", version = "v1.2", dependencies = @Dependency(id = "djxycore"))
+@Plugin(id = "permissionmanager", name = "PermissionManager", version = "v1.3", dependencies = @Dependency(id = "djxycore"))
 public class Main implements CorePlugin {
 
     private static Main instance;
@@ -144,8 +145,8 @@ public class Main implements CorePlugin {
         }
 
         CoreUtil.loadFileManagers(
-                players = new PlayerFile(path.getParent()),
                 groups = new GroupFile(path.getParent()),
+                players = new PlayerFile(path.getParent()),
                 promotions = new PromotionFile(path.getParent()),
                 config = new ConfigFile(path.getParent(), this, players, groups, promotions)
         );
@@ -177,8 +178,9 @@ public class Main implements CorePlugin {
     public void onMessageChatEvent(MessageChannelEvent.Chat event){
         org.spongepowered.api.entity.living.player.Player source = event.getCause().first(org.spongepowered.api.entity.living.player.Player.class).get();
         Player player = PermissionManager.getInstance().getPlayer(source.getUniqueId());
+        Text text = TextSerializers.FORMATTING_CODE.deserialize(player.getFullPrefix(source.getWorld().getName())+player.getNameFormat().replace("%player%", source.getName())+player.getFullSuffix(source.getWorld().getName())+player.getTextFormat()+event.getRawMessage().toPlain());
 
-        event.setMessage(TextSerializers.FORMATTING_CODE.deserialize(player.getDisplayPrefix()).concat(TextSerializers.FORMATTING_CODE.deserialize(player.getSuffix().replace("%player%", source.getName()) + "&f&r")).concat(event.getRawMessage()));
+        event.setMessage(text);
     }
 
     @Listener
