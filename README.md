@@ -13,3 +13,4 @@ PermissionManager is a permission plugin for Sponge.
 ##Plugin working with the [rule system](https://github.com/djxy/PermissionManager/wiki/Rules#what-is-a-rule).
 - [RedProtect](https://forums.spongepowered.org/t/anti-grief-redprotect-6-4-1/11846)
 - [FoxGuard](https://forums.spongepowered.org/t/world-protection-foxguard-the-flexible-world-protection-solution/9952)
+- [Nations](https://forums.spongepowered.org/t/earth-africa-nations-v0-7-pre-release-towny-like-protection-plugin/12127)
