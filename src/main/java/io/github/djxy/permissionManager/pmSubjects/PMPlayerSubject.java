@@ -6,8 +6,7 @@ import io.github.djxy.permissionManager.subjects.Player;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.service.context.Context;
 import org.spongepowered.api.service.permission.SubjectCollection;
-import org.spongepowered.api.service.permission.option.OptionSubject;
-import org.spongepowered.api.service.permission.option.OptionSubjectData;
+import org.spongepowered.api.service.permission.SubjectData;
 import org.spongepowered.api.util.Tristate;
 
 import java.util.HashMap;
@@ -18,7 +17,7 @@ import java.util.Set;
 /**
  * Created by Samuel on 2016-03-28.
  */
-public class PMPlayerSubject extends PMSubject implements OptionSubject, OptionSubjectData {
+public class PMPlayerSubject extends PMSubject {
 
     private int tickHelpCommand = -1;
 
@@ -35,12 +34,12 @@ public class PMPlayerSubject extends PMSubject implements OptionSubject, OptionS
     }
 
     @Override
-    public OptionSubjectData getSubjectData() {
+    public SubjectData getSubjectData() {
         return this;
     }
 
     @Override
-    public OptionSubjectData getTransientSubjectData() {
+    public SubjectData getTransientSubjectData() {
         return this;
     }
 

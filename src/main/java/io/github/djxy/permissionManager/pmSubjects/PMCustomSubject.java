@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * Created by Samuel on 2016-04-01.
  */
-public class PMCustomSubject extends PMSubject{
+public class PMCustomSubject extends PMSubject {
 
     public PMCustomSubject(CustomSubject subject, SubjectCollection collection) {
         super(subject, collection);

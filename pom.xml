@@ -44,13 +44,13 @@
         <dependency>
             <groupId>org.spongepowered</groupId>
             <artifactId>spongeapi</artifactId>
-            <version>4.0.3</version>
+            <version>5.0.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.FoxDenStudio</groupId>
             <artifactId>FoxGuard</artifactId>
-            <version>v0.17.0</version>
+            <version>v0.18.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.djxy</groupId>
